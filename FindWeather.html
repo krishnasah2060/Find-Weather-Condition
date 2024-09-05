@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App | Get Current Weather</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+    }
+    .form-container {
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #3e8e41;
+    }
+    #weather-data {
+      padding: 20px;
+      border-top: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Weather App | Get Current Weather</h1>
+    </div>
+    <div class="form-container">
+      <form>
+        <div class="form-group">
+          <label for="location">Enter Location (City, State, or Zip):</label>
+          <input type="text" id="location" required>
+        </div>
+        <button type="button" class="button" onclick="getWeather();">Get Weather</button>
+      </form>
+    </div>
+    <div id="weather-data">
+      <div id="weatherResult"></div>
+      <div id="errorMessage"></div>
+    </div>
+
+  <script>
+    async function getWeather() {
+      const location = document.getElementById('location').value;
+      const apiKey = '9284b9dff45ec7879e5a726f8e80a2cd';  // Replace with your OpenWeather API key
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === 200) {
+          // Display weather information
+          const weatherDescription = data.weather[0].description;
+          const temp = data.main.temp;
+          const feelsLike = data.main.feels_like;
+          const humidity = data.main.humidity;
+          const windSpeed = data.wind.speed;
+
+          document.getElementById('weatherResult').innerHTML = `
+            <h5>${data.name}, ${data.sys.country}</h5>
+            <p><strong>Weather:</strong> ${weatherDescription}</p>
+            <p><strong>Temperature:</strong> ${temp}°C (Feels like ${feelsLike}°C)</p>
+            <p><strong>Humidity:</strong> ${humidity}%</p>
+            <p><strong>Wind Speed:</strong> ${windSpeed} m/s</p>
+          `;
+        } else {
+          document.getElementById('errorMessage').innerHTML = 'Location not found. Please try again.';
+        }
+      } catch (error) {
+        document.getElementById('errorMessage').innerHTML = 'Error fetching weather data. Please try again later.';
+        console.error('Error fetching data:', error);
+      }
+    }
+  </script>
+</body>
+</html>
